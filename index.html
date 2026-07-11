@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase Match</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0b0f19;
+            font-family: 'Georgia', serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #e2e8f0
+        }
+
+        #game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #target-shadow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px dashed rgba(255,255,255,0.3);
+            box-shadow: 0 0 15px rgba(255,255,255,0.05);
+            z-index: 1;
+            top: 0px;
+        }
+
+        #player-moon {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #fef09a;
+            box-shadow: 0 0 40px rgba(254,240,138,0.6);
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        #moon-shadow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0b0f19;
+            border-radius: 50%;
+            transform: translateX(100%)
+        }
+
+        #score-text {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            color: #94a3b8;
+        }
+
+        #instructions {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="score-text">Stars Caught: 0</div>
+    
+        <div style="position: relative; width: 200px; height: 200px; margin-top: 30px;">
+            <div id="target-shadow"></div>
+            <div id="player-moon">
+                <div id="moon-shadow"></div>
+            </div>
+        </div>
+
+        <div id="instructions">Press SPACEBAR when the phases align</div>
+    </div>
+</body>
+</html>
