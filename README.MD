@@ -1,24 +1,24 @@
-# Meditation Garden
+# Phase Match
 
-A one-key web game designed for relaxation and breathing focus. 
+A one-key web game where you match shifting lunar phases to align the sky. 
 
 <p align="center">
-  <img src="preview.png" alt="Portfolio Preview" width="900">
+  <img src="preview.png" alt="Game Preview" width="900">
 </p>
 
 ## About 
-This web game is a small way to practice "box breathing" Whenever I'm stressed, I find it very helpful to just take deep breaths to ground myself. This is like a visualization of how that feels to me and hopefully it can help you to feel a bit more calm.
+This game is a simple reaction-time web game focused on visual alignment and timing. It provides a focused challenge where players track moving cycles and test their rhythm, offering a fun task from daily screen work.
 
-For future use, I'd definiely want create a mobile version in which you tap the screen instead of space bar. 
+For future updates, I would love to create a mobile version that uses screen taps instead of the spacebar so you can play it anywhere.
 
 ## Try It 
 Demo: 
 
 ## Features
-* A minimal welcome screen that fades out into the main garden 
-* Use only the spacebar to control your breathing circle 
-* The breathing circle smoothly expands and shifts color as you inhale and exhale
-* A blended garden background with a dark green overlay tint to keep the overall environment calming
+* One key control - spacebar
+* Catching a phase creates a starburst 
+* Every successful match creates a star in your nigth sky
+* A soft, cozy aesthetic with smooth CSS transitions 
 
 ## Built With
 * HTML

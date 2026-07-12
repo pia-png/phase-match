@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phase Match</title>
     <style>
+        @font-face {
+            font-family: "willow";
+            src: url("Pia_font-Regular.otf") format("opentype");
+        }
+
+        .willow { font-family: "willow", serif; }
+
         body, html {
             margin: 0;
             padding: 0;
@@ -12,7 +19,7 @@
             height: 100%;
             overflow: hidden;
             background-color: #0b0f19;
-            font-family: 'Georgia', serif;
+            font-family: 'willow', serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -70,10 +77,56 @@
         }
 
         #instructions {
-            margin-top: 30px;
-            font-size: 1.2rem;
-            opacity: 0.5;
+            margin-top: 40px;
+            font-size: 1.4rem;
             letter-spacing: 1px;
+            line-height: 1.6;
+            color: #e2e8f0
+        }
+
+        .hint {
+            font-size: 1rem;
+            opacity: 0.5;
+            display: block; /* Forces it to sit neatly on its own line below */
+            margin-top: 5px;
+        }
+
+        .star-particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #fef09a;
+            box-shadow: 0 0 10px #fef09a;
+            pointer-events: none;
+            animation: fallAndFade 1s forwards ease-out;
+        }
+
+        @keyframes fallAndFade {
+            0% {
+                opacity: 1;
+                transform: translate(0px, 0px) scale(1);
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(0.2);
+                opacity: 1;
+            }
+        }
+
+        .bg-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 8px #ffffff;
+            z-index: 0;
+            pointer-events: none;
+            animation: twinkleIn 0.5s forwards ease-out;
+        }
+        
+        @keyframes twinkleIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
     </style>
@@ -89,7 +142,124 @@
             </div>
         </div>
 
-        <div id="instructions">Press SPACEBAR when the phases align</div>
+        <div id="instructions">
+            Press <strong>SPACEBAR</strong> to Catch the Phase 
+            <span class="hint">Match the shadow with the dashed line</span>
+        </div>
     </div>
 </body>
+<script>
+
+let score = 0;
+let shadowPosition = 100;
+let direction = -1.5;
+let targetPosition = 0;
+let isGameOver = false;
+
+const moonShadow = document.getElementById('moon-shadow');
+const targetShadow = document.getElementById('target-shadow');
+const scoreText = document.getElementById('score-text');
+const instructions = document.getElementById('instructions');
+
+function generateNewTarget() {
+    targetPosition = Math.floor(Math.random() * 160) - 80;
+    targetShadow.style.transform = `translateX(${targetPosition}%)`;
+    targetShadow.style.backgroundColor = '#0b0f19'
+
+}
+
+function spawnStars() {
+    const container = document.getElementById('game-container');
+
+    for (let i = 0; i < 10; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star-particle');
+
+        star.style.left = 'calc(50% - 4px)';
+        star.style.top = '130px';
+
+        const scatterX = (Math.random() - 0.5) * 200 + 'px';
+        const scatterY = (Math.random() * 150) + 50 + 'px';
+
+        star.style.setProperty('--x', scatterX);
+        star.style.setProperty('--y', scatterY);
+
+        container.appendChild(star);
+        
+        setTimeout(() => {
+            star.remove();
+        }, 1000);
+
+    }
+}
+
+function addPermanentStar() {
+    const star = document.createElement('div');
+    star.classList.add('bg-star')
+
+    const randomX = Math.random() * window.innerWidth + 'px';
+    const randomY = Math.random() * window.innerHeight + 'px';
+
+    star.style.left = randomX;
+    star.style.top = randomY;
+
+    document.body.appendChild(star);
+}
+
+function clearPermanentStars() {
+    const stars = document.querySelectorAll('.bg-star');
+    stars.forEach(star => star.remove());
+}
+
+generateNewTarget();
+
+window.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+        event.preventDefault()
+        
+        if (isGameOver) {
+            score = 0;
+            scoreText.innerText = "Stars Caught: " + score
+            direction = -1.5;
+            isGameOver = false;
+            instructions.innerText = "Press SPACEBAR when the phases align";
+            clearPermanentStars();
+            generateNewTarget();
+            return;
+        }
+
+        let accuracy = Math.abs(shadowPosition - targetPosition);
+
+        if (accuracy < 15) {
+            score++;
+            scoreText.innerText = "Stars Caught: " + score;
+            
+            spawnStars();
+            addPermanentStar();
+
+            if (direction > 0) direction += 0.2;
+            else direction -= 0.2;
+
+            generateNewTarget();
+        } else {
+            isGameOver = true;
+            instructions.innerText = "The Moon Shattered! Press SPACEBAR to try again.";
+        }
+    }
+});
+
+function updateGame() {
+    if (!isGameOver){
+        shadowPosition += direction;
+        if (shadowPosition < -100 || shadowPosition > 100) {
+        direction *= -1;
+        }
+        moonShadow.style.transform = `translateX(${shadowPosition}%)`;
+    }
+    requestAnimationFrame(updateGame);
+}
+
+updateGame();
+
+</script>
 </html>
