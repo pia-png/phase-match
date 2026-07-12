@@ -12,7 +12,7 @@ This game is a simple reaction-time web game focused on visual alignment and tim
 For future updates, I would love to create a mobile version that uses screen taps instead of the spacebar so you can play it anywhere.
 
 ## Try It 
-Demo: 
+Demo: https://pia-png.github.io/phase-match/
 
 ## Features
 * One key control - spacebar
