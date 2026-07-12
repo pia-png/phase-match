@@ -27,6 +27,64 @@
             color: #e2e8f0
         }
 
+        #welcome-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+    
+            background: 
+                linear-gradient(rgba(11, 15, 25, 0.85), rgba(11, 15, 25, 0.85)), 
+                url('https://images.unsplash.com/photo-1475274047050-1d0c0975c63e?q=80&w=2344&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+
+        background-size: cover;
+        background-position: center;
+    
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        z-index: 10;
+        transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        #welcome-title {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+            color: #fef09a;
+            text-shadow: 0 0 25px rgba(254, 240, 154, 0.4);
+        }
+
+        #welcome-screen .hint {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        #game-container.visible {
+            opacity: 1;
+        }
+
         #game-container {
             position: relative;
             display: flex;
@@ -87,14 +145,13 @@
         .hint {
             font-size: 1rem;
             opacity: 0.5;
-            display: block; /* Forces it to sit neatly on its own line below */
-            margin-top: 5px;
+            display: block;
         }
 
         .star-particle {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background-color: #fef09a;
             box-shadow: 0 0 10px #fef09a;
             pointer-events: none;
@@ -112,26 +169,49 @@
             }
         }
 
-        .bg-star {
+.bg-star {
             position: absolute;
-            width: 4px;
-            height: 4px;
+            width: 5px;
+            height: 5px;
             background-color: #ffffff;
             border-radius: 50%;
-            box-shadow: 0 0 0 8px #ffffff;
             z-index: 0;
             pointer-events: none;
-            animation: twinkleIn 0.5s forwards ease-out;
+            box-shadow: 
+                0 0 4px #ffffff, 
+                0 0 12px #fef09a, 
+                0 0 20px rgba(254, 240, 154, 0.4);
+            animation: twinkleIn 0.4s ease-out forwards, deepTwinkle 3s infinite ease-in-out;
         }
-        
+
         @keyframes twinkleIn {
             0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
+
+        @keyframes deepTwinkle {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 4px #ffffff, 0 0 12px #fef09a, 0 0 20px rgba(254, 240, 154, 0.4);
+                opacity: 0.9;
+            }
+            50% { 
+                transform: scale(0.7); 
+                box-shadow: 0 0 2px #ffffff, 0 0 6px #fef09a, 0 0 10px rgba(254, 240, 154, 0.2);
+                opacity: 0.4; /* Dims slightly to create a breathing night sky */
+            }
+        }
+
+
 
     </style>
 </head>
 <body>
+    <div id="welcome-screen">
+        <div id="welcome-title">Phase Match</div>
+        <div class="hint">Press SPACEBAR to start</div>
+    </div>
+
     <div id="game-container">
         <div id="score-text">Stars Caught: 0</div>
     
@@ -155,11 +235,14 @@ let shadowPosition = 100;
 let direction = -1.5;
 let targetPosition = 0;
 let isGameOver = false;
+let gameStarted = false;
 
 const moonShadow = document.getElementById('moon-shadow');
 const targetShadow = document.getElementById('target-shadow');
 const scoreText = document.getElementById('score-text');
 const instructions = document.getElementById('instructions');
+const welcomeScreen = document.getElementById('welcome-screen');
+const gameContainer = document.getElementById('game-container');
 
 function generateNewTarget() {
     targetPosition = Math.floor(Math.random() * 160) - 80;
@@ -216,6 +299,13 @@ generateNewTarget();
 window.addEventListener('keydown', (event) => {
     if (event.code === 'Space') {
         event.preventDefault()
+
+        if (!gameStarted) {
+            gameStarted = true;
+            welcomeScreen.classList.add('hidden');
+            gameContainer.classList.add('visible');
+            return;
+        }
         
         if (isGameOver) {
             score = 0;
@@ -249,10 +339,10 @@ window.addEventListener('keydown', (event) => {
 });
 
 function updateGame() {
-    if (!isGameOver){
+    if (gameStarted && !isGameOver){ // Only moves if game is active
         shadowPosition += direction;
         if (shadowPosition < -100 || shadowPosition > 100) {
-        direction *= -1;
+            direction *= -1;
         }
         moonShadow.style.transform = `translateX(${shadowPosition}%)`;
     }
